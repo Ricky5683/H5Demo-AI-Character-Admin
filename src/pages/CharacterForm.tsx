@@ -36,7 +36,7 @@ const CharacterForm: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const isEdit = !!id
   
-  const { characters, addCharacter, updateCharacter, getCharacter } = useData()
+  const { addCharacter, updateCharacter, getCharacter } = useData()
   const [loading, setLoading] = useState(false)
   const [currentLanguage, setCurrentLanguage] = useState<Language>('zh')
   const [character, setCharacter] = useState<Character | null>(null)
@@ -194,7 +194,7 @@ const CharacterForm: React.FC = () => {
                       label="性别"
                       rules={[VALIDATION_RULES.REQUIRED]}
                     >
-                      <Select options={GENDER_OPTIONS} />
+                      <Select options={GENDER_OPTIONS as any} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>
@@ -213,7 +213,7 @@ const CharacterForm: React.FC = () => {
                   label="权限设置"
                   rules={[VALIDATION_RULES.REQUIRED]}
                 >
-                  <Select options={PERMISSION_OPTIONS} />
+                  <Select options={PERMISSION_OPTIONS as any} />
                 </Form.Item>
               </Card>
 

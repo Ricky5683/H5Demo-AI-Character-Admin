@@ -31,7 +31,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
       // 模拟上传延迟
       setTimeout(() => {
         // 创建本地预览URL（在实际项目中这里会返回OSS的URL）
-        const mockUrl = URL.createObjectURL(file)
+        const mockUrl = URL.createObjectURL(file as File)
         resolve(mockUrl)
       }, 1000)
     })
@@ -41,7 +41,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const getBase64 = (file: FileType): Promise<string> =>
     new Promise((resolve, reject) => {
       const reader = new FileReader()
-      reader.readAsDataURL(file)
+      reader.readAsDataURL(file as File)
       reader.onload = () => resolve(reader.result as string)
       reader.onerror = (error) => reject(error)
     })
@@ -68,7 +68,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   // 上传前检查
   const beforeUpload = (file: FileType) => {
     // 检查文件类型
-    const isValidType = UPLOAD_CONFIG.ACCEPTED_IMAGE_TYPES.includes(file.type)
+    const isValidType = UPLOAD_CONFIG.ACCEPTED_IMAGE_TYPES.includes(file.type as any)
     if (!isValidType) {
       message.error('只能上传 JPG/PNG/GIF/WebP 格式的图片！')
       return false

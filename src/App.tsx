@@ -44,24 +44,25 @@ function App() {
             }
           />
           <Route
-            path="/*"
+            path="/"
             element={
               <ProtectedRoute>
                 <Layout>
                   <Routes>
-                    <Route path="/" element={<Navigate to="/characters" replace />} />
-                    <Route path="/characters" element={<CharacterList />} />
-                    <Route path="/characters/new" element={<CharacterForm />} />
-                    <Route path="/characters/edit/:id" element={<CharacterForm />} />
-                    <Route path="/templates" element={<TemplateList />} />
-                    <Route path="/templates/new" element={<TemplateForm />} />
-                    <Route path="/templates/edit/:id" element={<TemplateForm />} />
-                    <Route path="/config" element={<ConfigPage />} />
+                    <Route index element={<Navigate to="characters" replace />} />
+                    <Route path="characters" element={<CharacterList />} />
+                    <Route path="characters/new" element={<CharacterForm />} />
+                    <Route path="characters/edit/:id" element={<CharacterForm />} />
+                    <Route path="templates" element={<TemplateList />} />
+                    <Route path="templates/new" element={<TemplateForm />} />
+                    <Route path="templates/edit/:id" element={<TemplateForm />} />
+                    <Route path="config" element={<ConfigPage />} />
                   </Routes>
                 </Layout>
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<Navigate to="/characters" replace />} />
         </Routes>
       </DataProvider>
     </AuthProvider>

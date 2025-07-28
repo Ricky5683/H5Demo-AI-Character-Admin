@@ -33,7 +33,7 @@ const TemplateForm: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const isEdit = !!id
   
-  const { templates, addTemplate, updateTemplate, getTemplate } = useData()
+  const { addTemplate, updateTemplate, getTemplate } = useData()
   const [loading, setLoading] = useState(false)
   const [currentLanguage, setCurrentLanguage] = useState<Language>('zh')
   const [template, setTemplate] = useState<Template | null>(null)
@@ -157,7 +157,7 @@ const TemplateForm: React.FC = () => {
                   label="分类"
                   rules={[VALIDATION_RULES.REQUIRED]}
                 >
-                  <Select options={TEMPLATE_CATEGORIES} />
+                  <Select options={TEMPLATE_CATEGORIES as any} />
                 </Form.Item>
 
                 <Form.Item

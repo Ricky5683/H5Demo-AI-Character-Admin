@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Layout as AntLayout, Menu, Button, Dropdown, Avatar, Typography } from 'antd'
+import { Layout as AntLayout, Menu, Button, Dropdown, Avatar } from 'antd'
 import {
   UserOutlined,
   FileTextOutlined,
@@ -13,7 +13,6 @@ import { useAuth } from '@/contexts/AuthContext'
 import { MENU_ITEMS } from '@/utils/constants'
 
 const { Header, Sider, Content } = AntLayout
-const { Title } = Typography
 
 interface LayoutProps {
   children: React.ReactNode

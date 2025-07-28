@@ -3,20 +3,20 @@ export const LANGUAGES = [
   { key: 'zh', label: '中文', flag: '🇨🇳' },
   { key: 'en', label: 'English', flag: '🇺🇸' },
   { key: 'ar', label: 'العربية', flag: '🇸🇦' },
-] as const
+]
 
 // 性别选项
 export const GENDER_OPTIONS = [
   { value: 'male', label: '男性' },
   { value: 'female', label: '女性' },
   { value: 'other', label: '其他' },
-] as const
+]
 
 // 权限选项
 export const PERMISSION_OPTIONS = [
   { value: 'public', label: '公开' },
   { value: 'private', label: '私有' },
-] as const
+]
 
 // 模板分类选项
 export const TEMPLATE_CATEGORIES = [
@@ -25,7 +25,7 @@ export const TEMPLATE_CATEGORIES = [
   { value: 'product', label: '产品介绍' },
   { value: 'faq', label: '常见问题' },
   { value: 'other', label: '其他' },
-] as const
+]
 
 // 分页配置
 export const PAGINATION_CONFIG = {

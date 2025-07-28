@@ -15,7 +15,6 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
@@ -24,7 +23,7 @@ import { Template } from '@/types'
 import { PAGINATION_CONFIG, TEMPLATE_CATEGORIES } from '@/utils/constants'
 
 const { Search } = Input
-const { Title, Text } = Typography
+const { Title } = Typography
 
 const TemplateList: React.FC = () => {
   const navigate = useNavigate()

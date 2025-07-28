@@ -15,14 +15,13 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  SearchOutlined,
   TeamOutlined,
   EyeOutlined,
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useData } from '@/contexts/DataContext'
-import { Character, Language } from '@/types'
+import { Character } from '@/types'
 import { PAGINATION_CONFIG, PERMISSION_OPTIONS, GENDER_OPTIONS } from '@/utils/constants'
 import WhitelistModal from '@/components/WhitelistModal'
 
