@@ -8,6 +8,8 @@ import CharacterForm from './pages/CharacterForm'
 import TemplateList from './pages/TemplateList'
 import TemplateForm from './pages/TemplateForm'
 import ConfigPage from './pages/ConfigPage'
+import TestPage from './pages/TestPage'
+import SimpleCharacterList from './pages/SimpleCharacterList'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { DataProvider } from './contexts/DataContext'
 
@@ -36,7 +38,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // Public Route component (redirect to dashboard if already authenticated)
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth()
-  return !isAuthenticated ? <>{children}</> : <Navigate to="/characters" replace />
+  return !isAuthenticated ? <>{children}</> : <Navigate to="/simple" replace />
 }
 
 function App() {
@@ -57,10 +59,30 @@ function App() {
           {/* 首页重定向 */}
           <Route
             path="/"
-            element={<Navigate to="/characters" replace />}
+            element={<Navigate to="/simple" replace />}
           />
           
-          {/* 角色管理 */}
+          {/* 测试页面 */}
+          <Route
+            path="/test"
+            element={
+              <ProtectedRoute>
+                <TestPage />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 简化版角色管理 */}
+          <Route
+            path="/simple"
+            element={
+              <ProtectedRoute>
+                <SimpleCharacterList />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 角色管理（完整版） */}
           <Route
             path="/characters"
             element={
@@ -123,7 +145,7 @@ function App() {
           />
           
           {/* 404处理 */}
-          <Route path="*" element={<Navigate to="/characters" replace />} />
+          <Route path="*" element={<Navigate to="/simple" replace />} />
         </Routes>
       </DataProvider>
     </AuthProvider>

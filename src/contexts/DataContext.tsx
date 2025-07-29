@@ -41,26 +41,97 @@ interface DataProviderProps {
   children: React.ReactNode
 }
 
+// 安全的localStorage读取函数
+function safeGetFromStorage<T>(key: string, defaultValue: T, validator?: (data: any) => boolean): T {
+  try {
+    const saved = localStorage.getItem(key)
+    if (!saved) return defaultValue
+    
+    const parsed = JSON.parse(saved)
+    
+    // 如果提供了验证函数，使用它验证数据
+    if (validator && !validator(parsed)) {
+      console.warn('Invalid data format for key: ' + key + ', using default value')
+      return defaultValue
+    }
+    
+    return parsed
+  } catch (error) {
+    console.warn('Failed to parse localStorage data for key: ' + key, error)
+    return defaultValue
+  }
+}
+
+// 数据验证函数
+const isValidCharactersArray = (data: any): boolean => {
+  return Array.isArray(data) && data.every(item => 
+    item && typeof item === 'object' && 
+    typeof item.id === 'string' && 
+    typeof item.botId === 'string'
+  )
+}
+
+const isValidTemplatesArray = (data: any): boolean => {
+  return Array.isArray(data) && data.every(item => 
+    item && typeof item === 'object' && 
+    typeof item.id === 'string' && 
+    typeof item.name === 'object'
+  )
+}
+
+const isValidConfig = (data: any): boolean => {
+  return data && typeof data === 'object' && Array.isArray(data.defaultAvatars)
+}
+
 export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
-  // 初始化模拟数据
+  // 一次性清理可能损坏的localStorage数据
+  React.useEffect(() => {
+    const cleanupVersion = '1.0.0'
+    const currentVersion = localStorage.getItem('demo_data_version')
+    
+    if (currentVersion !== cleanupVersion) {
+      // 清理可能损坏的数据
+      localStorage.removeItem('demo_characters')
+      localStorage.removeItem('demo_templates')
+      localStorage.removeItem('demo_config')
+      localStorage.setItem('demo_data_version', cleanupVersion)
+      
+      console.log('Data cleaned up for version:', cleanupVersion)
+    }
+  }, [])
+
+  // 初始化模拟数据 - 添加类型验证
   const [characters, setCharacters] = useState<Character[]>(() => {
-    const saved = localStorage.getItem('demo_characters')
-    return saved ? JSON.parse(saved) : generateMockCharacters()
+    return safeGetFromStorage(
+      'demo_characters', 
+      generateMockCharacters(), 
+      isValidCharactersArray
+    )
   })
   
   const [templates, setTemplates] = useState<Template[]>(() => {
-    const saved = localStorage.getItem('demo_templates')
-    return saved ? JSON.parse(saved) : generateMockTemplates()
+    return safeGetFromStorage(
+      'demo_templates', 
+      generateMockTemplates(), 
+      isValidTemplatesArray
+    )
   })
   
   const [config, setConfig] = useState<Config>(() => {
-    const saved = localStorage.getItem('demo_config')
-    return saved ? JSON.parse(saved) : generateMockConfig()
+    return safeGetFromStorage(
+      'demo_config', 
+      generateMockConfig(), 
+      isValidConfig
+    )
   })
 
-  // 保存到localStorage的通用函数
+  // 保存到localStorage的通用函数 - 添加错误处理
   const saveToStorage = useCallback((key: string, data: any) => {
-    localStorage.setItem(key, JSON.stringify(data))
+    try {
+      localStorage.setItem(key, JSON.stringify(data))
+    } catch (error) {
+      console.error('Failed to save data to localStorage for key: ' + key, error)
+    }
   }, [])
 
   // Character operations
@@ -155,16 +226,19 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
 
   // Whitelist operations
   const addToWhitelist = useCallback((characterId: string, phone: string) => {
-    updateCharacter(characterId, {
-      whitelist: [...(characters.find(c => c.id === characterId)?.whitelist || []), phone]
-    })
+    const character = characters.find(c => c.id === characterId)
+    if (character) {
+      updateCharacter(characterId, {
+        whitelist: [...(character.whitelist || []), phone]
+      })
+    }
   }, [updateCharacter, characters])
 
   const removeFromWhitelist = useCallback((characterId: string, phone: string) => {
     const character = characters.find(c => c.id === characterId)
     if (character) {
       updateCharacter(characterId, {
-        whitelist: character.whitelist.filter(p => p !== phone)
+        whitelist: (character.whitelist || []).filter(p => p !== phone)
       })
     }
   }, [updateCharacter, characters])

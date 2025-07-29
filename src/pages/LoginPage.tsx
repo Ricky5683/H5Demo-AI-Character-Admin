@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
       
       if (success) {
         message.success('登录成功！')
-        navigate('/characters')
+        navigate('/simple')
       } else {
         message.error('用户名或密码错误')
       }
