@@ -276,10 +276,9 @@ const CharacterList: React.FC = () => {
       </Card>
 
       <WhitelistModal
-        open={whitelistModal.open}
+        visible={whitelistModal.open}
         onCancel={() => setWhitelistModal({ open: false, characterId: '', characterName: '' })}
         characterId={whitelistModal.characterId}
-        characterName={whitelistModal.characterName}
       />
     </div>
   )

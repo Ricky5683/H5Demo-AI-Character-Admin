@@ -1,179 +1,112 @@
 import React, { useState, useMemo } from 'react'
-import {
-  Button,
-  Table,
-  Input,
-  Space,
-  Tag,
-  Switch,
-  Popconfirm,
+import { 
+  Button, 
+  Table, 
+  Space, 
+  Popconfirm, 
+  Input, 
   message,
-  Typography,
-  Card,
+  Typography
 } from 'antd'
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useData } from '@/contexts/DataContext'
-import { Template } from '@/types'
-import { PAGINATION_CONFIG, TEMPLATE_CATEGORIES } from '@/utils/constants'
+import { Template, MultiLangText } from '@/types'
 
 const { Search } = Input
 const { Title } = Typography
 
 const TemplateList: React.FC = () => {
   const navigate = useNavigate()
-  const { templates, deleteTemplate, updateTemplate } = useData()
+  const { templates, deleteTemplate } = useData()
   const [searchTerm, setSearchTerm] = useState('')
 
   // 过滤数据
   const filteredTemplates = useMemo(() => {
     if (!searchTerm.trim()) return templates
 
-    return templates.filter(template => {
-      const term = searchTerm.toLowerCase()
-      return (
-        template.name.zh.toLowerCase().includes(term) ||
-        template.name.en.toLowerCase().includes(term) ||
-        template.name.ar.toLowerCase().includes(term) ||
-        template.description.zh.toLowerCase().includes(term) ||
-        template.description.en.toLowerCase().includes(term) ||
-        template.description.ar.toLowerCase().includes(term) ||
-        template.category.toLowerCase().includes(term)
-      )
-    })
+    return templates.filter(template => 
+      template.name.zh.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      template.name.en?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      template.content.zh.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   }, [templates, searchTerm])
 
-  // 处理删除
-  const handleDelete = async (template: Template) => {
-    try {
-      deleteTemplate(template.id)
-      message.success('删除成功')
-    } catch (error) {
-      message.error('删除失败')
-    }
-  }
-
-  // 处理状态切换
-  const handleStatusToggle = async (template: Template, isActive: boolean) => {
-    try {
-      updateTemplate(template.id, { isActive })
-      message.success(isActive ? '已启用' : '已禁用')
-    } catch (error) {
-      message.error('操作失败')
-    }
+  // 删除模板
+  const handleDelete = (templateId: string) => {
+    deleteTemplate(templateId)
+    message.success('删除成功')
   }
 
   // 表格列配置
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      width: 120,
+      render: (id: string) => (
+        <Typography.Text code style={{ fontSize: '12px' }}>
+          {id.slice(0, 8)}...
+        </Typography.Text>
+      ),
+    },
+    {
       title: '模板名称',
       dataIndex: 'name',
       key: 'name',
-      render: (name: Template['name'], record: Template) => (
+      render: (name: MultiLangText) => (
         <div>
-          <div style={{ fontWeight: 500, marginBottom: 4 }}>
-            {name.zh}
-          </div>
-          <div style={{ fontSize: 12, color: '#666' }}>
-            {record.description.zh}
-          </div>
+          <div>{name.zh}</div>
+          {name.en && (
+            <div style={{ fontSize: '12px', color: '#999' }}>
+              {name.en}
+            </div>
+          )}
         </div>
       ),
     },
     {
-      title: '分类',
-      dataIndex: 'category',
-      key: 'category',
-      width: 120,
-      render: (category: string) => {
-        const categoryOption = TEMPLATE_CATEGORIES.find(c => c.value === category)
-        return (
-          <Tag color="blue">
-            {categoryOption?.label || category}
-          </Tag>
-        )
-      },
-    },
-    {
-      title: '状态',
-      dataIndex: 'isActive',
-      key: 'isActive',
-      width: 100,
-      render: (isActive: boolean, record: Template) => (
-        <Switch
-          checked={isActive}
-          onChange={(checked) => handleStatusToggle(record, checked)}
-          checkedChildren="启用"
-          unCheckedChildren="禁用"
-        />
+      title: 'SystemPrompt内容',
+      dataIndex: 'content',
+      key: 'content',
+      render: (content: MultiLangText) => (
+        <div style={{ maxWidth: 300 }}>
+          <Typography.Text ellipsis={{ tooltip: content.zh }}>
+            {content.zh}
+          </Typography.Text>
+        </div>
       ),
     },
     {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 140,
-      sorter: (a: Template, b: Template) => 
-        dayjs(a.createdAt).unix() - dayjs(b.createdAt).unix(),
-      render: (createdAt: string) => (
-        <div style={{ fontSize: 12 }}>
-          {dayjs(createdAt).format('YYYY-MM-DD HH:mm')}
-        </div>
-      ),
-    },
-    {
-      title: '最后更新',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      width: 140,
-      sorter: (a: Template, b: Template) => 
-        dayjs(a.updatedAt).unix() - dayjs(b.updatedAt).unix(),
-      render: (updatedAt: string) => (
-        <div style={{ fontSize: 12 }}>
-          {dayjs(updatedAt).format('YYYY-MM-DD HH:mm')}
-        </div>
-      ),
+      width: 180,
+      render: (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm'),
     },
     {
       title: '操作',
       key: 'actions',
-      width: 150,
-      render: (record: Template) => (
-        <Space size="small">
+      width: 120,
+      render: (_: any, record: Template) => (
+        <Space>
           <Button
             type="link"
             size="small"
-            icon={<EditOutlined />}
             onClick={() => navigate(`/templates/edit/${record.id}`)}
           >
             编辑
           </Button>
           <Popconfirm
             title="确认删除"
-            description={
-              <div>
-                <div>确定要删除模板 <strong>{record.name.zh}</strong> 吗？</div>
-                <div style={{ color: '#ff4d4f', fontSize: 12, marginTop: 4 }}>
-                  此操作不可恢复
-                </div>
-              </div>
-            }
-            onConfirm={() => handleDelete(record)}
-            okText="确认删除"
+            description="删除后无法恢复，确定要删除这个模板吗？"
+            onConfirm={() => handleDelete(record.id)}
+            okText="确认"
             cancelText="取消"
-            okButtonProps={{ danger: true }}
           >
-            <Button
-              type="link"
-              size="small"
-              danger
-              icon={<DeleteOutlined />}
-            >
+            <Button type="link" size="small" danger>
               删除
             </Button>
           </Popconfirm>
@@ -189,6 +122,10 @@ const TemplateList: React.FC = () => {
           <Title level={3} style={{ margin: 0 }}>
             模板管理
           </Title>
+
+          <div style={{ fontSize: '14px', color: '#666', marginTop: 4 }}>
+            （共 {filteredTemplates.length} 个模板）
+          </div>
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -217,19 +154,16 @@ const TemplateList: React.FC = () => {
         </div>
       </div>
 
-      <Card>
-        <Table
-          columns={columns}
-          dataSource={filteredTemplates}
-          rowKey="id"
-          pagination={{
-            ...PAGINATION_CONFIG,
-            total: filteredTemplates.length,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
-          }}
-        />
-      </Card>
+      <Table
+        columns={columns}
+        dataSource={filteredTemplates}
+        rowKey="id"
+        pagination={{
+          total: filteredTemplates.length,
+          showTotal: (total, range) =>
+            `第 ${range[0]}-${range[1]} 条，共 ${total} 条`,
+        }}
+      />
     </div>
   )
 }

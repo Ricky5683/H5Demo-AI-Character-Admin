@@ -182,7 +182,7 @@ const CharacterForm: React.FC = () => {
                 <Form.Item
                   name="avatar"
                   label="头像"
-                  rules={[VALIDATION_RULES.REQUIRED]}
+                  rules={[{ required: true, message: '请选择头像' }]}
                 >
                   <ImageUpload maxCount={1} />
                 </Form.Item>
@@ -192,16 +192,16 @@ const CharacterForm: React.FC = () => {
                     <Form.Item
                       name="gender"
                       label="性别"
-                      rules={[VALIDATION_RULES.REQUIRED]}
+                      rules={[{ required: true, message: '请选择性别' }]}
                     >
-                      <Select options={GENDER_OPTIONS as any} />
+                      <Select placeholder="选择性别" options={GENDER_OPTIONS as any} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>
                     <Form.Item
                       name="age"
                       label="年龄"
-                      rules={[VALIDATION_RULES.REQUIRED, VALIDATION_RULES.AGE]}
+                      rules={[VALIDATION_RULES.CHARACTER.AGE]}
                     >
                       <InputNumber min={1} max={150} style={{ width: '100%' }} />
                     </Form.Item>
@@ -211,9 +211,9 @@ const CharacterForm: React.FC = () => {
                 <Form.Item
                   name="permission"
                   label="权限设置"
-                  rules={[VALIDATION_RULES.REQUIRED]}
+                  rules={[{ required: true, message: '请选择权限设置' }]}
                 >
-                  <Select options={PERMISSION_OPTIONS as any} />
+                  <Select placeholder="选择权限设置" options={PERMISSION_OPTIONS as any} />
                 </Form.Item>
               </Card>
 
@@ -232,17 +232,14 @@ const CharacterForm: React.FC = () => {
               <Card title="高级设置" size="small">
                 <Form.Item
                   name="systemPrompt"
-                  label="System Prompt"
-                  help="系统提示词，用于指导AI的行为和回复风格"
-                  rules={[
-                    { max: VALIDATION_RULES.MAX_LENGTH.SYSTEM_PROMPT, message: `最多${VALIDATION_RULES.MAX_LENGTH.SYSTEM_PROMPT}个字符` }
-                  ]}
+                  label="系统提示词"
+                  rules={[VALIDATION_RULES.CHARACTER.SYSTEM_PROMPT]}
                 >
                   <TextArea
                     rows={6}
-                    placeholder="输入系统提示词，例如：You are a helpful and friendly AI assistant..."
+                    placeholder="设定角色的行为准则、对话风格等"
+                    maxLength={2000}
                     showCount
-                    maxLength={VALIDATION_RULES.MAX_LENGTH.SYSTEM_PROMPT}
                   />
                 </Form.Item>
               </Card>
@@ -262,84 +259,70 @@ const CharacterForm: React.FC = () => {
               >
                 <Form.Item
                   name="nickname"
-                  label="昵称"
-                  rules={[
-                    VALIDATION_RULES.REQUIRED,
-                    { max: VALIDATION_RULES.MAX_LENGTH.NICKNAME, message: `最多${VALIDATION_RULES.MAX_LENGTH.NICKNAME}个字符` }
-                  ]}
+                  label="角色昵称"
+                  rules={[VALIDATION_RULES.CHARACTER.NICKNAME]}
                 >
-                  <Input placeholder="输入角色昵称" maxLength={VALIDATION_RULES.MAX_LENGTH.NICKNAME} />
+                  <Input placeholder="输入AI角色的昵称" maxLength={50} />
                 </Form.Item>
 
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
                       name="region"
-                      label="地区"
-                      rules={[
-                        VALIDATION_RULES.REQUIRED,
-                        { max: VALIDATION_RULES.MAX_LENGTH.REGION, message: `最多${VALIDATION_RULES.MAX_LENGTH.REGION}个字符` }
-                      ]}
+                      label="角色地区"
+                      rules={[VALIDATION_RULES.CHARACTER.REGION]}
                     >
-                      <Input placeholder="如：北京" maxLength={VALIDATION_RULES.MAX_LENGTH.REGION} />
+                      <Input placeholder="输入角色所在地区" maxLength={50} />
                     </Form.Item>
                   </Col>
                   <Col span={12}>
                     <Form.Item
                       name="profession"
-                      label="职业"
-                      rules={[
-                        VALIDATION_RULES.REQUIRED,
-                        { max: VALIDATION_RULES.MAX_LENGTH.PROFESSION, message: `最多${VALIDATION_RULES.MAX_LENGTH.PROFESSION}个字符` }
-                      ]}
+                      label="角色职业"
+                      rules={[VALIDATION_RULES.CHARACTER.PROFESSION]}
                     >
-                      <Input placeholder="如：AI助手" maxLength={VALIDATION_RULES.MAX_LENGTH.PROFESSION} />
+                      <Input placeholder="输入角色的职业" maxLength={50} />
                     </Form.Item>
                   </Col>
                 </Row>
 
                 <Form.Item
                   name="introduction"
-                  label="介绍"
-                  rules={[
-                    VALIDATION_RULES.REQUIRED,
-                    { max: VALIDATION_RULES.MAX_LENGTH.INTRODUCTION, message: `最多${VALIDATION_RULES.MAX_LENGTH.INTRODUCTION}个字符` }
-                  ]}
+                  label="角色介绍"
+                  rules={[VALIDATION_RULES.CHARACTER.INTRODUCTION]}
                 >
                   <TextArea
                     rows={4}
-                    placeholder="输入角色介绍"
+                    placeholder="详细描述角色的背景、性格等"
+                    maxLength={500}
                     showCount
-                    maxLength={VALIDATION_RULES.MAX_LENGTH.INTRODUCTION}
                   />
                 </Form.Item>
 
                 <Form.Item
                   name="tags"
-                  label="标签"
-                  help="输入标签后按回车键添加"
+                  label="角色标签"
+                  tooltip="用于分类和搜索的关键词"
                 >
                   <Select
                     mode="tags"
-                    placeholder="添加标签"
-                    maxTagCount={5}
-                    maxTagTextLength={VALIDATION_RULES.MAX_LENGTH.TAG}
+                    placeholder="输入标签后按回车添加"
+                    style={{ width: '100%' }}
+                    options={[]}
+                    maxTagCount="responsive"
                   />
                 </Form.Item>
 
                 <Form.Item
                   name="greeting"
                   label="开场白"
-                  rules={[
-                    VALIDATION_RULES.REQUIRED,
-                    { max: VALIDATION_RULES.MAX_LENGTH.GREETING, message: `最多${VALIDATION_RULES.MAX_LENGTH.GREETING}个字符` }
-                  ]}
+                  tooltip="角色在对话开始时的问候语"
                 >
                   <TextArea
                     rows={3}
-                    placeholder="输入角色的开场白"
+                    placeholder="请输入角色开场白（选填）"
+                    maxLength={200}
                     showCount
-                    maxLength={VALIDATION_RULES.MAX_LENGTH.GREETING}
                   />
                 </Form.Item>
               </Card>

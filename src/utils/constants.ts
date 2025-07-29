@@ -44,28 +44,32 @@ export const UPLOAD_CONFIG = {
 
 // 表单验证规则
 export const VALIDATION_RULES = {
-  REQUIRED: { required: true, message: '此项为必填项' },
+  CHARACTER: {
+    NICKNAME: { required: true, message: '请输入角色昵称' },
+    REGION: { required: true, message: '请输入角色地区' },
+    PROFESSION: { required: true, message: '请输入角色职业' },
+    INTRODUCTION: { required: true, message: '请输入角色介绍' },
+    GREETING: { required: false }, // 改为非必填
+    SYSTEM_PROMPT: { required: true, message: '请输入系统提示词' },
+    AGE: { 
+      required: true, 
+      type: 'number', 
+      min: 1, 
+      max: 200, 
+      message: '年龄必须在1-200之间' 
+    },
+  },
+  TEMPLATE: {
+    NAME: { required: true, message: '请输入模板名称' },
+    CONTENT: { 
+      required: true, 
+      message: '请输入模板内容',
+      max: 15000 // 更新限制为15000
+    },
+  },
   PHONE: {
-    pattern: /^1[3-9]\d{9}$/,
-    message: '请输入正确的手机号码格式'
-  },
-  AGE: {
-    type: 'number' as const,
-    min: 1,
-    max: 150,
-    message: '年龄必须在1-150之间'
-  },
-  MAX_LENGTH: {
-    NICKNAME: 50,
-    REGION: 50,
-    PROFESSION: 50,
-    INTRODUCTION: 500,
-    TAG: 20,
-    GREETING: 200,
-    SYSTEM_PROMPT: 2000,
-    TEMPLATE_NAME: 100,
-    TEMPLATE_DESCRIPTION: 200,
-    TEMPLATE_CONTENT: 5000,
+    PATTERN: /^(\+\d{1,3}[- ]?)?\d{10,15}$/, // 支持国别码的电话号码格式
+    MESSAGE: '请输入有效的手机号码（支持国际格式，如+86 13800138000）'
   }
 } as const
 
