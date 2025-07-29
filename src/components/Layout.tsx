@@ -24,12 +24,17 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation()
   const { user, logout } = useAuth()
 
-  // 根据当前路径获取选中的菜单项
+  // 根据当前路径获取选中的菜单项 - 适配HashRouter
   const getSelectedKey = () => {
-    const path = location.pathname
-    if (path.startsWith('/characters')) return 'characters'
-    if (path.startsWith('/templates')) return 'templates'
-    if (path.startsWith('/config')) return 'config'
+    const hash = location.hash || window.location.hash
+    const pathname = location.pathname
+    
+    // 检查当前路径（支持HashRouter和BrowserRouter）
+    const currentPath = hash ? hash.replace('#', '') : pathname
+    
+    if (currentPath.includes('/characters')) return 'characters'
+    if (currentPath.includes('/templates')) return 'templates'
+    if (currentPath.includes('/config')) return 'config'
     return 'characters'
   }
 

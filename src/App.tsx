@@ -21,7 +21,16 @@ message.config({
 // Protected Route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth()
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />
+  }
+  
+  return (
+    <Layout>
+      {children}
+    </Layout>
+  )
 }
 
 // Public Route component (redirect to dashboard if already authenticated)
@@ -35,6 +44,7 @@ function App() {
     <AuthProvider>
       <DataProvider>
         <Routes>
+          {/* 登录页面 */}
           <Route
             path="/login"
             element={
@@ -43,25 +53,76 @@ function App() {
               </PublicRoute>
             }
           />
+          
+          {/* 首页重定向 */}
           <Route
             path="/"
+            element={<Navigate to="/characters" replace />}
+          />
+          
+          {/* 角色管理 */}
+          <Route
+            path="/characters"
             element={
               <ProtectedRoute>
-                <Layout>
-                  <Routes>
-                    <Route index element={<Navigate to="characters" replace />} />
-                    <Route path="characters" element={<CharacterList />} />
-                    <Route path="characters/new" element={<CharacterForm />} />
-                    <Route path="characters/edit/:id" element={<CharacterForm />} />
-                    <Route path="templates" element={<TemplateList />} />
-                    <Route path="templates/new" element={<TemplateForm />} />
-                    <Route path="templates/edit/:id" element={<TemplateForm />} />
-                    <Route path="config" element={<ConfigPage />} />
-                  </Routes>
-                </Layout>
+                <CharacterList />
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/characters/new"
+            element={
+              <ProtectedRoute>
+                <CharacterForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/characters/edit/:id"
+            element={
+              <ProtectedRoute>
+                <CharacterForm />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 模板管理 */}
+          <Route
+            path="/templates"
+            element={
+              <ProtectedRoute>
+                <TemplateList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/templates/new"
+            element={
+              <ProtectedRoute>
+                <TemplateForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/templates/edit/:id"
+            element={
+              <ProtectedRoute>
+                <TemplateForm />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 通用配置 */}
+          <Route
+            path="/config"
+            element={
+              <ProtectedRoute>
+                <ConfigPage />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 404处理 */}
           <Route path="*" element={<Navigate to="/characters" replace />} />
         </Routes>
       </DataProvider>
