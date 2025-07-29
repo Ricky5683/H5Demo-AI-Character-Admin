@@ -22,7 +22,7 @@ const WhitelistModal: React.FC<WhitelistModalProps> = ({
   const { characters, addToWhitelist, removeFromWhitelist } = useData()
 
   const character = characters.find(c => c.id === characterId)
-  const whitelist = character?.whitelist || []
+  const whitelist = Array.isArray(character?.whitelist) ? character.whitelist : []
 
   // 添加手机号
   const handleAdd = async () => {

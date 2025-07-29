@@ -228,8 +228,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const addToWhitelist = useCallback((characterId: string, phone: string) => {
     const character = characters.find(c => c.id === characterId)
     if (character) {
+      const currentWhitelist = Array.isArray(character.whitelist) ? character.whitelist : []
       updateCharacter(characterId, {
-        whitelist: [...(character.whitelist || []), phone]
+        whitelist: [...currentWhitelist, phone]
       })
     }
   }, [updateCharacter, characters])
@@ -237,8 +238,9 @@ export const DataProvider: React.FC<DataProviderProps> = ({ children }) => {
   const removeFromWhitelist = useCallback((characterId: string, phone: string) => {
     const character = characters.find(c => c.id === characterId)
     if (character) {
+      const currentWhitelist = Array.isArray(character.whitelist) ? character.whitelist : []
       updateCharacter(characterId, {
-        whitelist: (character.whitelist || []).filter(p => p !== phone)
+        whitelist: currentWhitelist.filter(p => p !== phone)
       })
     }
   }, [updateCharacter, characters])

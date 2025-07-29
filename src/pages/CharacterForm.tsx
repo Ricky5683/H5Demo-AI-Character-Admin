@@ -113,8 +113,8 @@ const CharacterForm: React.FC = () => {
         introduction: createMultiLangText(values.introduction, character?.introduction),
         greeting: createMultiLangText(values.greeting, character?.greeting),
         tags: {
-          ...character?.tags || { zh: [], en: [], ar: [] },
-          [currentLanguage]: values.tags || [],
+          ...(character?.tags && typeof character.tags === 'object' ? character.tags : { zh: [], en: [], ar: [] }),
+          [currentLanguage]: Array.isArray(values.tags) ? values.tags : [],
         },
       }
 
@@ -123,9 +123,9 @@ const CharacterForm: React.FC = () => {
         gender: values.gender,
         age: values.age,
         permission: values.permission,
-        displayImages: values.displayImages || [],
+        displayImages: Array.isArray(values.displayImages) ? values.displayImages : [],
         systemPrompt: values.systemPrompt || '',
-        whitelist: character?.whitelist || [],
+        whitelist: Array.isArray(character?.whitelist) ? character.whitelist : [],
         ...multiLangData,
       }
 

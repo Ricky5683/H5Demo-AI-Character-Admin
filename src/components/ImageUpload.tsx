@@ -47,12 +47,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     })
 
   // 文件列表转换
-  const fileList: UploadFile[] = (value || []).map((url, index) => ({
+  const fileList: UploadFile[] = Array.isArray(value) ? value.map((url, index) => ({
     uid: `${index}`,
     name: `image-${index}.jpg`,
     status: 'done',
     url,
-  }))
+  })) : []
 
   // 预览处理
   const handlePreview = async (file: UploadFile) => {
@@ -111,7 +111,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   // 移除文件
   const handleRemove = (file: UploadFile) => {
-    const newValue = (value || []).filter(url => url !== file.url)
+    const newValue = Array.isArray(value) ? value.filter(url => url !== file.url) : []
     onChange?.(newValue)
   }
 
