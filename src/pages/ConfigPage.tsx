@@ -61,7 +61,7 @@ const ConfigPage: React.FC = () => {
       const url = await mockUploadToOSS(file)
       
       // 添加到默认头像列表
-      const newAvatars = [...config.defaultAvatars, url]
+      const newAvatars = [...(config.defaultAvatars || []), url]
       updateConfig({ defaultAvatars: newAvatars })
       
       message.success('头像上传成功')
@@ -75,7 +75,7 @@ const ConfigPage: React.FC = () => {
 
   // 删除默认头像
   const handleDeleteAvatar = (avatarUrl: string) => {
-    const newAvatars = config.defaultAvatars.filter(url => url !== avatarUrl)
+    const newAvatars = (config.defaultAvatars || []).filter(url => url !== avatarUrl)
     updateConfig({ defaultAvatars: newAvatars })
     message.success('删除成功')
   }
@@ -123,7 +123,7 @@ const ConfigPage: React.FC = () => {
             backgroundColor: '#fafafa',
           }}
         >
-          {config.defaultAvatars.length === 0 ? (
+          {(config.defaultAvatars || []).length === 0 ? (
             <div
               style={{
                 textAlign: 'center',
@@ -139,7 +139,7 @@ const ConfigPage: React.FC = () => {
             </div>
           ) : (
             <Row gutter={[16, 16]}>
-              {config.defaultAvatars.map((avatarUrl, index) => (
+              {(config.defaultAvatars || []).map((avatarUrl, index) => (
                 <Col xs={12} sm={8} md={6} lg={4} key={index}>
                   <Card
                     hoverable
@@ -206,7 +206,7 @@ const ConfigPage: React.FC = () => {
           </div>
           <div>• 默认头像将在创建AI角色时作为头像选项提供</div>
           <div>• 建议上传尺寸为 150x150 像素的正方形图片</div>
-          <div>• 当前默认头像数量：{config.defaultAvatars.length}</div>
+          <div>• 当前默认头像数量：{(config.defaultAvatars || []).length}</div>
         </div>
       </Card>
 
