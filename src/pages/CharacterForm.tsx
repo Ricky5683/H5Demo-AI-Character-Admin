@@ -54,7 +54,7 @@ const CharacterForm: React.FC = () => {
           region: existingCharacter.region[currentLanguage],
           profession: existingCharacter.profession[currentLanguage],
           introduction: existingCharacter.introduction[currentLanguage],
-          tags: existingCharacter.tags[currentLanguage],
+          tags: Array.isArray(existingCharacter.tags[currentLanguage]) ? existingCharacter.tags[currentLanguage] : [],
           greeting: existingCharacter.greeting[currentLanguage],
         })
       } else {
@@ -82,7 +82,7 @@ const CharacterForm: React.FC = () => {
         region: character.region[currentLanguage],
         profession: character.profession[currentLanguage],
         introduction: character.introduction[currentLanguage],
-        tags: character.tags[currentLanguage],
+        tags: Array.isArray(character.tags[currentLanguage]) ? character.tags[currentLanguage] : [],
         greeting: character.greeting[currentLanguage],
       })
     }
